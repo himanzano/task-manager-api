@@ -16,6 +16,9 @@ class User(Base):
     
     # Email: User's email address, must be unique
     email: Mapped[str] = mapped_column(String, unique=True, index=True)
+
+    # Hashed Password: Securely stored password hash
+    hashed_password: Mapped[str] = mapped_column(String, nullable=False)
     
     # Created At: Timestamp when the user record was created
     # Defaults to the current UTC time
