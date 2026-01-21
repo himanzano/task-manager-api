@@ -57,10 +57,10 @@ cd task-manager-api
 ### 2. Configurar o ambiente
 Crie um arquivo `.env` na raiz do projeto:
 ```bash
-DATABASE_URL=postgresql://postgres:postgres@localhost:5432/task_manager
-SECRET_KEY=sua_chave_secreta_super_segura
-ALGORITHM=HS256
-ACCESS_TOKEN_EXPIRE_MINUES=30
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/task_manager"
+SECRET_KEY="sua_chave_secreta_super_segura"
+ALGORITHM="HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES=30
 REFRESH_TOKEN_EXPIRE_DAYS=7
 ```
 
