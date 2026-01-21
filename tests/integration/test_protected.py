@@ -23,7 +23,7 @@ def test_read_users_me_success(client: TestClient):
 def test_read_users_me_missing_token(client: TestClient):
     response = client.get("/auth/me")
     assert response.status_code == 401
-    assert response.json()["detail"] == "Not authenticated"
+    assert response.json()["message"] == "Not authenticated"
 
 def test_read_users_me_invalid_token(client: TestClient):
     response = client.get(
@@ -31,4 +31,4 @@ def test_read_users_me_invalid_token(client: TestClient):
         headers={"Authorization": "Bearer invalid_token"},
     )
     assert response.status_code == 401
-    assert response.json()["detail"] == "Could not validate credentials"
+    assert response.json()["message"] == "Could not validate credentials"

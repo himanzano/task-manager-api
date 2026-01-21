@@ -26,7 +26,7 @@ def test_register_duplicate_email(client: TestClient):
         json={"email": "test@example.com", "password": "newpassword"},
     )
     assert response.status_code == 400
-    assert response.json()["detail"] == "Email already registered"
+    assert response.json()["message"] == "Email already registered"
 
 def test_login_success(client: TestClient):
     # Create user first
@@ -55,7 +55,7 @@ def test_login_wrong_password(client: TestClient):
         json={"email": "wrongpass@example.com", "password": "wrongpassword"},
     )
     assert response.status_code == 401
-    assert response.json()["detail"] == "Incorrect email or password"
+    assert response.json()["message"] == "Incorrect email or password"
 
 def test_login_non_existent_user(client: TestClient):
     response = client.post(
@@ -63,7 +63,7 @@ def test_login_non_existent_user(client: TestClient):
         json={"email": "nonexistent@example.com", "password": "password123"},
     )
     assert response.status_code == 401
-    assert response.json()["detail"] == "Incorrect email or password"
+    assert response.json()["message"] == "Incorrect email or password"
 
 def test_refresh_token_success(client: TestClient):
     # Register and login
@@ -94,4 +94,4 @@ def test_refresh_token_invalid(client: TestClient):
         json={"refresh_token": "invalid_token_string"},
     )
     assert response.status_code == 401
-    assert response.json()["detail"] == "Could not validate credentials"
+    assert response.json()["message"] == "Could not validate credentials"
