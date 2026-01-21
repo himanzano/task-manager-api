@@ -77,7 +77,7 @@ def test_refresh_token_success(client: TestClient):
     )
     refresh_token = login_res.json()["refresh_token"]
 
-    time.sleep(1)
+    time.sleep(2)
     response = client.post(
         "/auth/refresh",
         json={"refresh_token": refresh_token},
