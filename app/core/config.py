@@ -9,13 +9,14 @@ class Settings(BaseSettings):
     """
     
     # Database connection string (PostgreSQL)
-    # Format: postgresql://user:password@host:port/dbname
-    # Field(...) indicates this is a required field, but handled by Pydantic's env loading
     DATABASE_URL: str = Field(..., validation_alias="DATABASE_URL")
 
-    # Configuration for loading settings
-    # env_file specifies the file to read environment variables from
-    # extra="ignore" allows extra environment variables without raising errors
+    # Security settings
+    SECRET_KEY: str = Field(..., validation_alias="SECRET_KEY")
+    ALGORITHM: str = Field("HS256", validation_alias="ALGORITHM")
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = Field(30, validation_alias="ACCESS_TOKEN_EXPIRE_MINUTES")
+    REFRESH_TOKEN_EXPIRE_DAYS: int = Field(7, validation_alias="REFRESH_TOKEN_EXPIRE_DAYS")
+
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
 settings = Settings() # type: ignore
