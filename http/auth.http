@@ -1,0 +1,53 @@
+@baseUrl = http://localhost:8080
+@email = test_user@example.com
+@password = secret123
+
+###
+# @name register
+# Register a new user
+# Note: Change email if running multiple times as email must be unique
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "password": "{{password}}"
+}
+
+###
+# @name login
+# Login to get access token
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "password": "{{password}}"
+}
+
+###
+# @name me
+# Get current user profile using the token
+GET {{baseUrl}}/auth/me
+Authorization: Bearer {{login.response.body.access_token}}
+
+###
+# @name refreshToken
+# Refresh the access token
+POST {{baseUrl}}/auth/refresh
+Content-Type: application/json
+
+{
+  "refresh_token": "{{login.response.body.refresh_token}}"
+}
+
+###
+# @name loginError
+# Try to login with wrong password
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "password": "wrongpassword"
+}

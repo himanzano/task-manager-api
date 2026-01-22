@@ -1,0 +1,75 @@
+@baseUrl = http://localhost:8080
+@email = test_user@example.com
+@password = secret123
+
+# Login first to get the token if you haven't already in auth.http
+# This request is duplicated here for convenience when running just this file
+###
+# @name loginTask
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "password": "{{password}}"
+}
+
+###
+# @name createTask
+# Create a new task
+POST {{baseUrl}}/tasks
+Content-Type: application/json
+Authorization: Bearer {{loginTask.response.body.access_token}}
+
+{
+  "title": "Finish the project",
+  "description": "Complete the API documentation and tests",
+  "status": "TODO"
+}
+
+###
+# @name listTasks
+# Get all tasks for the user
+GET {{baseUrl}}/tasks?limit=5&offset=0
+Authorization: Bearer {{loginTask.response.body.access_token}}
+
+###
+# @name getTask
+# Get a specific task by ID
+GET {{baseUrl}}/tasks/{{createTask.response.body.id}}
+Authorization: Bearer {{loginTask.response.body.access_token}}
+
+###
+# @name updateTask
+# Update the task status
+PUT {{baseUrl}}/tasks/{{createTask.response.body.id}}
+Content-Type: application/json
+Authorization: Bearer {{loginTask.response.body.access_token}}
+
+{
+  "title": "Finish the project (Updated)",
+  "status": "IN_PROGRESS"
+}
+
+###
+# @name deleteTask
+# Delete the task
+DELETE {{baseUrl}}/tasks/{{createTask.response.body.id}}
+Authorization: Bearer {{loginTask.response.body.access_token}}
+
+###
+# @name getTaskNotFound
+# Try to get the deleted task (should fail)
+GET {{baseUrl}}/tasks/{{createTask.response.body.id}}
+Authorization: Bearer {{loginTask.response.body.access_token}}
+
+###
+# @name createInvalidTask
+# Try to create a task with missing title (validation error)
+POST {{baseUrl}}/tasks
+Content-Type: application/json
+Authorization: Bearer {{loginTask.response.body.access_token}}
+
+{
+  "description": "This should fail"
+}
