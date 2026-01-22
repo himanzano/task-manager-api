@@ -86,7 +86,19 @@ uv sync
 uv run alembic upgrade head
 ```
 
-### 5. Iniciar o servidor
+### 5. Popular ou Resetar o banco de dados (Opcional)
+
+Para criar dados de exemplo (usuários e tarefas):
+```bash
+uv run scripts/seed.py
+```
+
+Para apagar todos os dados e resetar o banco:
+```bash
+uv run scripts/clean_db.py
+```
+
+### 6. Iniciar o servidor
 
 ```bash
 uv run scripts/dev.py
