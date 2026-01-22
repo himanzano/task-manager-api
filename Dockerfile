@@ -50,4 +50,4 @@ EXPOSE 8080
 
 # Run the application with Gunicorn + Uvicorn workers
 # Cloud Run injects the PORT env var, but we verify it matches 8080
-CMD exec gunicorn --bind :$PORT --workers 1 --worker-class uvicorn.workers.UvicornWorker --threads 8 --timeout 0 app.main:app
+CMD ["gunicorn", "--bind", ":$PORT", "--workers", "1", "--worker-class", "uvicorn.workers.UvicornWorker", "--threads", "8", "--timeout", "0", "app.main:app"]
