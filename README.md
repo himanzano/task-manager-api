@@ -108,10 +108,26 @@ A API utiliza autenticação via **Bearer Token**.
 
 ## 🧪 Testes
 
-Para rodar a suíte de testes (utiliza SQLite em memória para isolamento total):
+Para rodar a suíte de testes automatizados (utiliza SQLite em memória para isolamento total):
+
 ```bash
 uv run pytest
 ```
+
+## 🔍 Testes Manuais (Arquivos .http)
+
+Além dos testes automatizados, o projeto inclui arquivos `.http` na pasta `http/` para facilitar o debugging e testes manuais rápidos.
+
+### Como usar:
+
+1. Instale a extensão **REST Client** no VS Code ou utilize a CLI [**httpyac**](https://github.com/AnWeber/httpyac).
+2. Certifique-se de que a API está rodando.
+3. Abra os arquivos em `http/`:
+   - `auth.http`: Testes de registro, login e renovação de token.
+   - `tasks.http`: CRUD completo de tarefas (possui fluxo dinâmico que captura o ID da tarefa criada).
+   - `health.http`: Verificação de saúde da API.
+
+*Nota: Os arquivos são dinâmicos. Ao executar o Login, o token é capturado automaticamente para as requisições subsequentes.*
 
 ## 📄 Documentação (Swagger)
 
