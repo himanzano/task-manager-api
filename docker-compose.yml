@@ -1,0 +1,45 @@
+# ESTE ARQUIVO É APENAS PARA DESENVOLVIMENTO LOCAL.
+# No Google Cloud Run (Produção), o banco de dados é o Supabase e o container é stateless.
+# Este arquivo facilita o desenvolvimento provendo um banco PostgreSQL local.
+
+services:
+  db:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: task_manager
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build: .
+    # Porta alterada para 8080 para consistência com o Cloud Run
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      # No Docker Compose local, aponta para o serviço 'db' acima
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/task_manager
+      
+      # Configurações de segurança (sobrescreva no Cloud Run!)
+      SECRET_KEY: ${SECRET_KEY:-changeme_in_production_secret_key}
+      ALGORITHM: HS256
+      ACCESS_TOKEN_EXPIRE_MINUTES: 30
+      REFRESH_TOKEN_EXPIRE_DAYS: 7
+      PORT: 8080
+    env_file:
+      - .env
+
+volumes:
+  postgres_data:
