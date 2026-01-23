@@ -2,6 +2,8 @@
 @email = test_user@example.com
 @password = secret123
 
+# Note: IDs are now UUIDs. The script captures them dynamically.
+
 # Login first to get the token if you haven't already in auth.http
 # This request is duplicated here for convenience when running just this file
 ###

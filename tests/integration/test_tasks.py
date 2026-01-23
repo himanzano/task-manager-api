@@ -1,5 +1,6 @@
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
+import uuid
 
 from app.core import security
 from app.models.task import Task, TaskStatus
@@ -96,7 +97,7 @@ def test_read_task_success(client: TestClient, auth_headers: dict, db_session: S
     assert response.json()["title"] == "My Task"
 
 def test_read_task_not_found(client: TestClient, auth_headers: dict):
-    response = client.get("/tasks/999", headers=auth_headers)
+    response = client.get(f"/tasks/{uuid.uuid4()}", headers=auth_headers)
     assert response.status_code == 404
 
 def test_read_task_other_owner_404(

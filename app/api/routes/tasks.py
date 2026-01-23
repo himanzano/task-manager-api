@@ -1,4 +1,5 @@
 from typing import Annotated, List
+from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
@@ -54,7 +55,7 @@ def read_tasks(
 
 @router.get("/{id}", response_model=TaskResponse)
 def read_task(
-    id: int,
+    id: UUID,
     current_user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
 ):
@@ -72,7 +73,7 @@ def read_task(
 
 @router.put("/{id}", response_model=TaskResponse)
 def update_task(
-    id: int,
+    id: UUID,
     task_update: TaskUpdate,
     current_user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
@@ -99,14 +100,13 @@ def update_task(
 
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_task(
-    id: int,
+    id: UUID,
     current_user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
 ):
     """
     Delete a task.
     Enforces ownership: Users can only delete their own tasks.
-    This performs a hard delete as soft delete was not explicitly chosen as mandatory.
     """
     task = db.query(Task).filter(Task.id == id, Task.owner_id == current_user.id).first()
     if not task:

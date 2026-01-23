@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 from fastapi.testclient import TestClient
 from app.main import app
+import uuid
 
 # We need to import the app to mount a route, but for testing 500s with TestClient,
 # we need raise_server_exceptions=False.
@@ -17,7 +18,9 @@ def test_validation_error_structure(client: TestClient):
     assert data["details"][0]["field"] == "body.email"
 
 def test_http_exception_structure_404(client: TestClient, auth_headers: dict):
-    response = client.get("/tasks/99999", headers=auth_headers)
+    # Use a random UUID that definitely doesn't exist
+    non_existent_id = uuid.uuid4()
+    response = client.get(f"/tasks/{non_existent_id}", headers=auth_headers)
     assert response.status_code == 404
     data = response.json()
     assert "message" in data
