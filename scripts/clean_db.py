@@ -5,19 +5,21 @@ import os
 sys.path.append(os.getcwd())
 
 from sqlalchemy import text
-from app.db.session import SessionLocal
+from app.db.session import SessionLocal, set_custom_db_url
 
 def clean_database():
     """
     Deletes all data from the database tables.
     """
+    # Uncomment and set the database URL if needed
+    # set_custom_db_url("postgresql://postgres:postgres@localhost:5432/task_manager")
     db = SessionLocal()
     try:
         print("Cleaning database...")
         
         # Use TRUNCATE with CASCADE to clear tables and handle relationships
-        # This is more efficient than DELETE and resets sequences in PostgreSQL
-        db.execute(text("TRUNCATE TABLE tasks, users RESTART IDENTITY CASCADE;"))
+        # This is more efficient than DELETE. RESTART IDENTITY is not needed for UUIDs.
+        db.execute(text("TRUNCATE TABLE tasks, users CASCADE;"))
         db.commit()
         
         print("Database cleaned successfully!")

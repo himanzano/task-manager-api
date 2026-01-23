@@ -4,12 +4,14 @@ import os
 # Ensure the project root is in the python path
 sys.path.append(os.getcwd())
 
-from app.db.session import SessionLocal
+from app.db.session import SessionLocal, set_custom_db_url
 from app.models.user import User
 from app.models.task import Task, TaskStatus
 from app.core.security import get_password_hash
 
 def seed_data():
+    # Uncomment and set the database URL if needed
+    # set_custom_db_url("postgresql://postgres:postgres@localhost:5432/task_manager")
     db = SessionLocal()
     try:
         # Check if data already exists to avoid duplicates
@@ -62,8 +64,8 @@ def seed_data():
 
         print("Database seeded successfully!")
         print("Users created:")
-        print(f" - {user1.email} (password: password123)")
-        print(f" - {user2.email} (password: securepass)")
+        print(f" - {user1.email} (ID: {user1.id}) (password: password123)")
+        print(f" - {user2.email} (ID: {user2.id}) (password: securepass)")
 
     except Exception as e:
         print(f"Error seeding data: {e}")
