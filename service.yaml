@@ -1,0 +1,55 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: app
+spec:
+  template:
+    spec:
+      containers:
+        - image: ${IMAGE_NAME}
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: database_url
+                  key: latest
+            - name: DB_POOL_SIZE
+              valueFrom:
+                secretKeyRef:
+                  name: db_pool_size
+                  key: latest
+            - name: DB_MAX_OVERFLOW
+              valueFrom:
+                secretKeyRef:
+                  name: db_max_overflow
+                  key: latest
+            - name: SSL_MODE
+              valueFrom:
+                secretKeyRef:
+                  name: ssl_mode
+                  key: latest
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: secret_key
+                  key: latest
+            - name: ALGORITHM
+              valueFrom:
+                secretKeyRef:
+                  name: algorithm
+                  key: latest
+            - name: ACCESS_TOKEN_EXPIRE_MINUTES
+              valueFrom:
+                secretKeyRef:
+                  name: access_token_expire_minutes
+                  key: latest
+            - name: REFRESH_TOKEN_EXPIRE_DAYS
+              valueFrom:
+                secretKeyRef:
+                  name: refresh_token_expire_days
+                  key: latest
+            - name: BACKEND_CORS_ORIGINS
+              valueFrom:
+                secretKeyRef:
+                  name: backend_cors_origins
+                  key: latest
