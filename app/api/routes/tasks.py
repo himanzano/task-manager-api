@@ -63,7 +63,9 @@ def read_task(
     Retrieve a specific task by ID.
     Enforces ownership: Users can only see their own tasks.
     """
-    task = db.query(Task).filter(Task.id == id, Task.owner_id == current_user.id).first()
+    task = (
+        db.query(Task).filter(Task.id == id, Task.owner_id == current_user.id).first()
+    )
     if not task:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Task not found"
@@ -82,16 +84,18 @@ def update_task(
     Update a task.
     Enforces ownership: Users can only update their own tasks.
     """
-    task = db.query(Task).filter(Task.id == id, Task.owner_id == current_user.id).first()
+    task = (
+        db.query(Task).filter(Task.id == id, Task.owner_id == current_user.id).first()
+    )
     if not task:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Task not found"
         )
-    
+
     update_data = task_update.model_dump(exclude_unset=True)
     for field, value in update_data.items():
         setattr(task, field, value)
-    
+
     db.add(task)
     db.commit()
     db.refresh(task)
@@ -108,12 +112,14 @@ def delete_task(
     Delete a task.
     Enforces ownership: Users can only delete their own tasks.
     """
-    task = db.query(Task).filter(Task.id == id, Task.owner_id == current_user.id).first()
+    task = (
+        db.query(Task).filter(Task.id == id, Task.owner_id == current_user.id).first()
+    )
     if not task:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Task not found"
         )
-    
+
     db.delete(task)
     db.commit()
     return None

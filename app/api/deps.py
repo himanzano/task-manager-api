@@ -24,7 +24,7 @@ def get_db() -> Generator:
 
 def get_current_user(
     token: Annotated[str, Depends(oauth2_scheme)],
-    db: Annotated[Session, Depends(get_db)]
+    db: Annotated[Session, Depends(get_db)],
 ) -> User:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -41,7 +41,7 @@ def get_current_user(
         token_data = TokenPayload(sub=sub)
     except (JWTError, ValidationError):
         raise credentials_exception
-        
+
     user = db.query(User).filter(User.email == token_data.sub).first()
     if user is None:
         raise credentials_exception

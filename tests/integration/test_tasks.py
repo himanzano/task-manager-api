@@ -3,8 +3,9 @@ from sqlalchemy.orm import Session
 import uuid
 
 from app.core import security
-from app.models.task import Task, TaskStatus
+from app.models.task import Task
 from app.models.user import User
+
 
 def test_create_task_success(client: TestClient, auth_headers: dict):
     response = client.post(
@@ -20,6 +21,7 @@ def test_create_task_success(client: TestClient, auth_headers: dict):
     assert "id" in data
     assert "owner_id" in data
 
+
 def test_create_task_missing_fields(client: TestClient, auth_headers: dict):
     response = client.post(
         "/tasks",
@@ -27,6 +29,7 @@ def test_create_task_missing_fields(client: TestClient, auth_headers: dict):
         headers=auth_headers,
     )
     assert response.status_code == 422
+
 
 def test_create_task_ignores_owner_id(client: TestClient, auth_headers: dict):
     # Attempt to inject a different owner_id
@@ -42,13 +45,14 @@ def test_create_task_ignores_owner_id(client: TestClient, auth_headers: dict):
     # but we know it shouldn't be 999 unless the test user has ID 999 (unlikely).
     assert data["owner_id"] != 999
 
+
 def test_read_tasks_own_only(
     client: TestClient, auth_headers: dict, db_session: Session, test_user: User
 ):
     # Create task for current user
     task1 = Task(title="My Task", owner_id=test_user.id)
     db_session.add(task1)
-    
+
     # Create another user and their task
     other_user = User(
         email="other@example.com",
@@ -56,7 +60,7 @@ def test_read_tasks_own_only(
     )
     db_session.add(other_user)
     db_session.commit()
-    
+
     task2 = Task(title="Other Task", owner_id=other_user.id)
     db_session.add(task2)
     db_session.commit()
@@ -67,7 +71,10 @@ def test_read_tasks_own_only(
     assert len(data) == 1
     assert data[0]["title"] == "My Task"
 
-def test_read_tasks_pagination(client: TestClient, auth_headers: dict, db_session: Session, test_user: User):
+
+def test_read_tasks_pagination(
+    client: TestClient, auth_headers: dict, db_session: Session, test_user: User
+):
     # Create 15 tasks
     for i in range(15):
         db_session.add(Task(title=f"Task {i}", owner_id=test_user.id))
@@ -87,7 +94,10 @@ def test_read_tasks_pagination(client: TestClient, auth_headers: dict, db_sessio
     assert len(response.json()) == 5
     assert response.json()[0]["title"] == "Task 5"
 
-def test_read_task_success(client: TestClient, auth_headers: dict, db_session: Session, test_user: User):
+
+def test_read_task_success(
+    client: TestClient, auth_headers: dict, db_session: Session, test_user: User
+):
     task = Task(title="My Task", owner_id=test_user.id)
     db_session.add(task)
     db_session.commit()
@@ -96,9 +106,11 @@ def test_read_task_success(client: TestClient, auth_headers: dict, db_session: S
     assert response.status_code == 200
     assert response.json()["title"] == "My Task"
 
+
 def test_read_task_not_found(client: TestClient, auth_headers: dict):
     response = client.get(f"/tasks/{uuid.uuid4()}", headers=auth_headers)
     assert response.status_code == 404
+
 
 def test_read_task_other_owner_404(
     client: TestClient, auth_headers: dict, db_session: Session
@@ -109,7 +121,7 @@ def test_read_task_other_owner_404(
     )
     db_session.add(other_user)
     db_session.commit()
-    
+
     task = Task(title="Other Task", owner_id=other_user.id)
     db_session.add(task)
     db_session.commit()
@@ -117,7 +129,10 @@ def test_read_task_other_owner_404(
     response = client.get(f"/tasks/{task.id}", headers=auth_headers)
     assert response.status_code == 404
 
-def test_update_task_success(client: TestClient, auth_headers: dict, db_session: Session, test_user: User):
+
+def test_update_task_success(
+    client: TestClient, auth_headers: dict, db_session: Session, test_user: User
+):
     task = Task(title="Old Title", owner_id=test_user.id)
     db_session.add(task)
     db_session.commit()
@@ -132,6 +147,7 @@ def test_update_task_success(client: TestClient, auth_headers: dict, db_session:
     assert data["title"] == "New Title"
     assert data["status"] == "IN_PROGRESS"
 
+
 def test_update_task_other_owner_404(
     client: TestClient, auth_headers: dict, db_session: Session
 ):
@@ -141,7 +157,7 @@ def test_update_task_other_owner_404(
     )
     db_session.add(other_user)
     db_session.commit()
-    
+
     task = Task(title="Other Task", owner_id=other_user.id)
     db_session.add(task)
     db_session.commit()
@@ -153,17 +169,21 @@ def test_update_task_other_owner_404(
     )
     assert response.status_code == 404
 
-def test_delete_task_success(client: TestClient, auth_headers: dict, db_session: Session, test_user: User):
+
+def test_delete_task_success(
+    client: TestClient, auth_headers: dict, db_session: Session, test_user: User
+):
     task = Task(title="To Delete", owner_id=test_user.id)
     db_session.add(task)
     db_session.commit()
 
     response = client.delete(f"/tasks/{task.id}", headers=auth_headers)
     assert response.status_code == 204
-    
+
     # Verify it's gone
     response = client.get(f"/tasks/{task.id}", headers=auth_headers)
     assert response.status_code == 404
+
 
 def test_delete_task_other_owner_404(
     client: TestClient, auth_headers: dict, db_session: Session
@@ -174,7 +194,7 @@ def test_delete_task_other_owner_404(
     )
     db_session.add(other_user)
     db_session.commit()
-    
+
     task = Task(title="Other Task", owner_id=other_user.id)
     db_session.add(task)
     db_session.commit()

@@ -4,10 +4,11 @@ import os
 # Ensure the project root is in the python path
 sys.path.append(os.getcwd())
 
-from app.db.session import SessionLocal, set_custom_db_url
+from app.db.session import SessionLocal
 from app.models.user import User
 from app.models.task import Task, TaskStatus
 from app.core.security import get_password_hash
+
 
 def seed_data():
     # Uncomment and set the database URL if needed
@@ -23,14 +24,12 @@ def seed_data():
 
         # Create Users
         user1 = User(
-            email="alice@example.com",
-            hashed_password=get_password_hash("password123")
+            email="alice@example.com", hashed_password=get_password_hash("password123")
         )
         user2 = User(
-            email="bob@example.com", 
-            hashed_password=get_password_hash("securepass")
+            email="bob@example.com", hashed_password=get_password_hash("securepass")
         )
-        
+
         db.add(user1)
         db.add(user2)
         db.commit()
@@ -42,13 +41,13 @@ def seed_data():
             title="Buy groceries",
             description="Milk, Bread, Eggs",
             status=TaskStatus.TODO,
-            owner_id=user1.id
+            owner_id=user1.id,
         )
         task2 = Task(
             title="Walk the dog",
             description="Take the dog to the park",
             status=TaskStatus.DONE,
-            owner_id=user1.id
+            owner_id=user1.id,
         )
 
         # Create Tasks for User 2
@@ -56,7 +55,7 @@ def seed_data():
             title="Complete project report",
             description="Finish the annual report analysis",
             status=TaskStatus.IN_PROGRESS,
-            owner_id=user2.id
+            owner_id=user2.id,
         )
 
         db.add_all([task1, task2, task3])
@@ -72,6 +71,7 @@ def seed_data():
         db.rollback()
     finally:
         db.close()
+
 
 if __name__ == "__main__":
     seed_data()

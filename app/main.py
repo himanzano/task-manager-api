@@ -30,14 +30,19 @@ if settings.BACKEND_CORS_ORIGINS:
     )
 
 # Register exception handlers
-app.add_exception_handler(StarletteHTTPException, cast(ExceptionHandler, http_exception_handler))
-app.add_exception_handler(RequestValidationError, cast(ExceptionHandler, validation_exception_handler))
+app.add_exception_handler(
+    StarletteHTTPException, cast(ExceptionHandler, http_exception_handler)
+)
+app.add_exception_handler(
+    RequestValidationError, cast(ExceptionHandler, validation_exception_handler)
+)
 app.add_exception_handler(Exception, global_exception_handler)
 
 # Include routers
 app.include_router(auth.router)
 app.include_router(tasks.router)
 app.include_router(health.router)
+
 
 @app.get("/")
 def root():

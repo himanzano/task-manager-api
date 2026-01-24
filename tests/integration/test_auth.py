@@ -1,9 +1,6 @@
 from fastapi.testclient import TestClient
-from sqlalchemy.orm import Session
 import time
 
-from app.core import security
-from app.models.user import User
 
 def test_register_user(client: TestClient):
     response = client.post(
@@ -15,6 +12,7 @@ def test_register_user(client: TestClient):
     assert data["email"] == "test@example.com"
     assert "id" in data
     assert "password" not in data
+
 
 def test_register_duplicate_email(client: TestClient):
     client.post(
@@ -28,13 +26,14 @@ def test_register_duplicate_email(client: TestClient):
     assert response.status_code == 400
     assert response.json()["message"] == "Email already registered"
 
+
 def test_login_success(client: TestClient):
     # Create user first
     client.post(
         "/auth/register",
         json={"email": "login@example.com", "password": "password123"},
     )
-    
+
     response = client.post(
         "/auth/login",
         json={"email": "login@example.com", "password": "password123"},
@@ -44,6 +43,7 @@ def test_login_success(client: TestClient):
     assert "access_token" in data
     assert "refresh_token" in data
     assert data["token_type"] == "bearer"
+
 
 def test_login_wrong_password(client: TestClient):
     client.post(
@@ -57,6 +57,7 @@ def test_login_wrong_password(client: TestClient):
     assert response.status_code == 401
     assert response.json()["message"] == "Incorrect email or password"
 
+
 def test_login_non_existent_user(client: TestClient):
     response = client.post(
         "/auth/login",
@@ -64,6 +65,7 @@ def test_login_non_existent_user(client: TestClient):
     )
     assert response.status_code == 401
     assert response.json()["message"] == "Incorrect email or password"
+
 
 def test_refresh_token_success(client: TestClient):
     # Register and login
@@ -87,6 +89,7 @@ def test_refresh_token_success(client: TestClient):
     assert "access_token" in data
     assert "refresh_token" in data
     assert data["access_token"] != login_res.json()["access_token"]
+
 
 def test_refresh_token_invalid(client: TestClient):
     response = client.post(

@@ -1,6 +1,6 @@
 import enum
 import uuid
-from datetime import datetime, timezone
+from datetime import datetime
 from typing import Optional
 
 from sqlalchemy import String, ForeignKey, DateTime, Enum, Text, Uuid
@@ -10,10 +10,12 @@ from sqlalchemy.sql import func
 from app.db.base import Base
 from app.models.user import User
 
+
 class TaskStatus(str, enum.Enum):
     TODO = "TODO"
     IN_PROGRESS = "IN_PROGRESS"
     DONE = "DONE"
+
 
 class Task(Base):
     __tablename__ = "tasks"
@@ -27,11 +29,11 @@ class Task(Base):
         Enum(TaskStatus), default=TaskStatus.TODO, index=True
     )
     owner_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), nullable=False)
-    
+
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
-    
+
     updated_at: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True), onupdate=func.now(), nullable=True
     )

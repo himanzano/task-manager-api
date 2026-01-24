@@ -23,6 +23,7 @@ engine = create_engine(
 
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
+
 @pytest.fixture(scope="function")
 def db_session() -> Generator[Session, None, None]:
     """
@@ -35,11 +36,13 @@ def db_session() -> Generator[Session, None, None]:
     session.close()
     Base.metadata.drop_all(bind=engine)
 
+
 @pytest.fixture(scope="function")
 def client(db_session: Session) -> Generator[TestClient, None, None]:
     """
     Fixture for FastAPI TestClient with overridden DB dependency.
     """
+
     def override_get_db():
         try:
             yield db_session
@@ -50,6 +53,7 @@ def client(db_session: Session) -> Generator[TestClient, None, None]:
     with TestClient(app) as c:
         yield c
     app.dependency_overrides.clear()
+
 
 @pytest.fixture(scope="function")
 def test_user(db_session: Session) -> User:
@@ -64,6 +68,7 @@ def test_user(db_session: Session) -> User:
     db_session.commit()
     db_session.refresh(user)
     return user
+
 
 @pytest.fixture(scope="function")
 def auth_headers(test_user: User) -> dict:

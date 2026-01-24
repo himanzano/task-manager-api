@@ -1,5 +1,5 @@
 from fastapi.testclient import TestClient
-from app.core import security
+
 
 def test_read_users_me_success(client: TestClient):
     # Register and login
@@ -20,10 +20,12 @@ def test_read_users_me_success(client: TestClient):
     assert response.status_code == 200
     assert response.json()["email"] == "me@example.com"
 
+
 def test_read_users_me_missing_token(client: TestClient):
     response = client.get("/auth/me")
     assert response.status_code == 401
     assert response.json()["message"] == "Not authenticated"
+
 
 def test_read_users_me_invalid_token(client: TestClient):
     response = client.get(

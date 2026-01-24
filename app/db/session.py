@@ -22,6 +22,7 @@ engine = create_engine(str(settings.DATABASE_URL), **engine_params)
 # autoflush=False: We want to manually flush changes to the DB
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
+
 def set_custom_db_url(url: str) -> None:
     """
     Reconfigures the database engine and session maker with a custom URL.
