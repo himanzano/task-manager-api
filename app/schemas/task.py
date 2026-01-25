@@ -18,9 +18,11 @@ class TaskCreate(TaskBase):
 
 
 class TaskUpdate(BaseModel):
-    title: Optional[str] = Field(None, min_length=1)
+    title: str = Field(..., min_length=1)
     description: Optional[str] = None
     status: Optional[TaskStatus] = None
+
+    model_config = ConfigDict(extra="forbid")
 
 
 class TaskResponse(TaskBase):
