@@ -1,12 +1,15 @@
+import os
 import subprocess
 import sys
+import dotenv
 
+dotenv.load_dotenv(dotenv_path=".env.dev")
 
 def run_dev_server():
     """
     Invokes the development server using uv and uvicorn.
     """
-    command = ["uv", "run", "uvicorn", "app.main:app", "--reload", "--port", "8080"]
+    command = ["uv", "run", "uvicorn", "app.main:app", "--reload", "--port", os.getenv("PORT", "5000")]
 
     try:
         subprocess.run(command, check=True)
