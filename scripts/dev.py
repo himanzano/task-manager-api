@@ -10,7 +10,9 @@ def run_dev_server():
     Invokes the development server using uv and uvicorn.
     """
     parser = argparse.ArgumentParser(description="Run the development server.")
-    parser.add_argument("--staging", action="store_true", help="Run in staging mode (load .env.stage)")
+    parser.add_argument(
+        "--staging", action="store_true", help="Run in staging mode (load .env.stage)"
+    )
     args = parser.parse_args()
 
     if args.staging:
@@ -23,7 +25,15 @@ def run_dev_server():
     print(f"Loading environment from {env_file}...")
     dotenv.load_dotenv(dotenv_path=env_file, override=True)
 
-    command = ["uv", "run", "uvicorn", "app.main:app", "--reload", "--port", os.getenv("PORT", "5000")]
+    command = [
+        "uv",
+        "run",
+        "uvicorn",
+        "app.main:app",
+        "--reload",
+        "--port",
+        os.getenv("PORT", "5000"),
+    ]
 
     try:
         subprocess.run(command, check=True)
