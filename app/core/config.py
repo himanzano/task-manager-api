@@ -1,3 +1,4 @@
+import os
 from typing import Literal, Any
 from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -59,7 +60,10 @@ class Settings(BaseSettings):
         raise ValueError(v)
 
     model_config = SettingsConfigDict(
-        env_file=".env",
+        env_file={
+            "production": ".env.prod",
+            "staging": ".env.stage",
+        }.get(os.getenv("ENV"), ".env.dev"),
         extra="ignore",
     )
 

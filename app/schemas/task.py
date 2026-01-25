@@ -14,7 +14,7 @@ class TaskBase(BaseModel):
 
 
 class TaskCreate(TaskBase):
-    pass
+    model_config = ConfigDict(extra="forbid")
 
 
 class TaskUpdate(BaseModel):
@@ -30,4 +30,4 @@ class TaskResponse(TaskBase):
     owner_id: UUID
     created_at: datetime
 
-    model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True, extra="forbid")
